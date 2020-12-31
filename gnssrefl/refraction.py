@@ -26,7 +26,7 @@ def read_4by5(station, dlat,dlon,hell):
 #        os.makedirs(inputpath)
 
     obsfile = inputpath + station + '_refr.txt'
-    print('reading from station refraction file: ', obsfile)
+    #print('reading from station refraction file: ', obsfile)
     x = np.genfromtxt(obsfile,comments='%')
     max_ind = 4
     pgrid = np.zeros((4,5))
@@ -100,7 +100,7 @@ def gpt2_1w (station, dmjd,dlat,dlon,hell,it):
 
 
 # change the reference epoch to January 1 2000
-    print('Modified Julian Day', dmjd)
+    #print('Modified Julian Day', dmjd)
     dmjd1 = dmjd-51544.5 
 
     pi2 = 2*np.pi
@@ -116,7 +116,7 @@ def gpt2_1w (station, dmjd,dlat,dlon,hell,it):
 
 # factors for amplitudes, i.e. whether you want time varying
     if (it==1):
-        print('>>>> no refraction time variation ')
+        #print('>>>> no refraction time variation ')
         cosfy = 0; coshy = 0; sinfy = 0; sinhy = 0;
     else: 
         cosfy = np.cos(pi2*dmjd1/365.25)
@@ -252,9 +252,9 @@ def readWrite_gpt2_1w(xdir, station, site_lat, site_lon):
     """
     PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
     BASE_DIR = os.path.dirname(PROJECT_ROOT)
-    print(PROJECT_ROOT)
+    #print(PROJECT_ROOT)
     # this appears to be the one i want
-    print(BASE_DIR)
+    #print(BASE_DIR)
     try3 = PROJECT_ROOT + '/' + 'gpt_1wA.pickle'
 
     # check that output path exists.  
@@ -264,9 +264,10 @@ def readWrite_gpt2_1w(xdir, station, site_lat, site_lon):
 
     outfile = outpath + station + '_refr.txt'
     if os.path.isfile(outfile):
-        print('refraction file for this station already exists')
+        okokok = 1
+        #print('refraction file for this station already exists')
     else:
-        print('refraction output file will be written to ', outfile)
+        print('A station specific refraction output file will be written to ', outfile)
 
 #   change to radians
         dlat = site_lat*np.pi/180 
@@ -274,20 +275,20 @@ def readWrite_gpt2_1w(xdir, station, site_lat, site_lon):
 
 #   read VMF gridfile in pickle format 
         pname = xdir + '/input/' + 'gpt_1wA.pickle'
-        print('large refraction file should be stored here:', pname)
+        print('The large refraction file should be stored here:', pname)
         try:
             f = open(pname, 'rb')
             [All_pgrid, All_Tgrid, All_Qgrid, All_dTgrid, All_U, All_Hs, All_ahgrid, All_awgrid, All_lagrid, All_Tmgrid] = pickle.load(f)
             f.close()
         except:
-            print('I did not find it, will look in current working directory')
+            print('I did not find it, I will look in current working directory')
             try:
                 pname =  'gpt_1wA.pickle'
                 f = open(pname, 'rb')
                 [All_pgrid, All_Tgrid, All_Qgrid, All_dTgrid, All_U, All_Hs, All_ahgrid, All_awgrid, All_lagrid, All_Tmgrid] = pickle.load(f)
                 f.close()
             except:
-                print('hmm, failed again. ... try yet again')
+                print('hmm, failed again. ... try yet again here: ')
                 #cwd = os.getcwd()
                 #pname =  cwd + '/data/gpt_1wA.pickle'
                 pname =   try3
@@ -298,6 +299,7 @@ def readWrite_gpt2_1w(xdir, station, site_lat, site_lon):
                     f.close()
                 except:
                     print('could not get this done')
+                    print('download the missing gpt_1wA.pickle file from github and put it in the $REFL_CODE/input directory ')
                     sys.exit()
 
 
@@ -397,7 +399,7 @@ def readWrite_gpt2_1w(xdir, station, site_lat, site_lon):
 
             w+=1
         fout.close()
-        print('file written')
+        print('station specific refraction file written')
 
 
 def corr_el_angles(el_deg, press, temp):

@@ -6,6 +6,7 @@ kristine larson
 """
 import argparse
 import gnssrefl.gps as g
+import os
 import sys
 
 def version3(station,year,doy,NS,archive):
@@ -30,7 +31,7 @@ def version3(station,year,doy,NS,archive):
             srate = 30
             fexist = g.ga_rinex3(station, year, doy,srate)
         if fexist:
-            print('RINEX 3 DOWNLOAD SUCCESSFUL from ', archive)
+            print('SUCESSFUL RINEX3 DOWNLOAD:', archive)
         else:
             print('could not find the RINEX 3 file')
     else:
@@ -45,10 +46,10 @@ def main():
     parser.add_argument("station", help="station name", type=str)
     parser.add_argument("year", help="year", type=int)
     parser.add_argument("month", help="month (or day of year)", type=int)
-    parser.add_argument("day", help="day (zero if you use day of year earlier)", type=int)
+    parser.add_argument("day",   help="day (zero if you use day of year earlier)", type=int)
 # optional arguments
     parser.add_argument("-rate", default='low', metavar='low',type=str, help="sample rate: low or high")
-    parser.add_argument("-archive", default=None, metavar='all',help="archive (unavco,sopac,cddis,sonel,nz,ga,ngs,bkg)", type=str)
+    parser.add_argument("-archive", default=None, metavar='cddis',help="archive (unavco,sopac,cddis,sonel,nz,ga,ngs,bkg,nrcan)", type=str)
     parser.add_argument("-version", default=None, metavar=2,type=int, help="rinex version (2 or 3)")
     parser.add_argument("-doy_end", default=None, type=int, help="last day of year to be downloaded")
 
@@ -80,7 +81,10 @@ def main():
     # set archive variable
     archive = args.archive
 
-    archive_list = ['sopac', 'unavco','sonel','cddis','nz','ga','bkg','jeff','ngs']
+
+    archive_list = ['sopac', 'unavco','sonel','cddis','nz','ga','bkg','jeff','ngs','nrcan']
+
+    archive_list_high = ['unavco','nrcan','ga']
 
     if args.version == None:
         version = 2
@@ -98,7 +102,7 @@ def main():
         version = 3 # even if you don't choose version 3 .... 
     
     # this is for version 2
-    if (version == 2):
+    if (version == 2) and (rate == 'low'):
         if (NS != 4):
             print('exiting: RINEX 2.11 station names must have 4 characters, lowercase please')
             sys.exit()
@@ -113,26 +117,37 @@ def main():
                 print(archive_list)
                 archive = 'all'
 
-    print('archive selected: ' , archive)
+    #print('archive selected: ' , archive)
     # default archive wil be CDDIS for version 3
     if (version == 3):
         if (args.archive == None):
             archive = 'cddis'
-            print('no archive was specified, so looking for it at CDDIS')
+            #print('no archive was specified, so looking for it at CDDIS')
         else:
             archive = args.archive
 
-    # currently only search unavco for 1 sec data
-    print('data rate', rate)
-    if rate == 'high':
-        archive = 'unavco'
+    # print('data rate', rate)
+    if (rate == 'high') and (version == 2):
+        if args.archive == None:
+            archive = 'unavco'
+        else:
+            archive = args.archive
+
+        if archive not in archive_list_high:
+            print('You picked an archive that is not supported by my code. Exiting')
+            sys.exit()
 
     for d in range(doy, doy_end+1):
-        print('working on year, day of year:', year, d)
+        #print('working on year, day of year:', year, d)
         if version == 3:
             version3(station,year,d,NS,archive)
         else: # RINEX VERSION 2
             g.go_get_rinex_flex(station,year,d,0,rate,archive)
+            rinexfile,rinexfiled = g.rinex_name(station, year, month, day)
+            if os.path.isfile(rinexfile):
+                print('SUCCESS: ', rinexfile)
+            else:
+                print(rinexfile, ' not found')
 
 if __name__ == "__main__":
     main()

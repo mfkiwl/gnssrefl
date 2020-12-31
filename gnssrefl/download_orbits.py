@@ -15,7 +15,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("orbit", help="orbit center, 3char", type=str)
+    parser.add_argument("orbit", help="orbit center (gps,gnss,gps+glo, or specific centers) ", type=str)
     parser.add_argument("year", help="year", type=int)
     parser.add_argument("month", help="month (or day of year)", type=int)
     parser.add_argument("day", help="day (zero if you use day of year earlier)", type=int)
@@ -25,7 +25,7 @@ def main():
 #   make sure environment variables exist.  set to current directory if not
     g.check_environ_variables()
 
-    orbit_list = ['igs', 'igs','jax','grg','wum','gbm','nav']
+    orbit_list = ['igs', 'igs','jax','grg','wum','gbm','nav','gps','gps+glo','gnss']
 
 #   assign to normal variables
     pCtr = args.orbit
@@ -50,10 +50,27 @@ def main():
         print(orbit_list)
         sys.exit()
 
+    # if generic names used, we direct people to these orbit types
+    if pCtr == 'gps':
+        pCtr = 'nav'
+
+    if pCtr == 'gnss':
+        pCtr = 'gbm'
+
+    if pCtr == 'gps+glo':
+        pCtr = 'jax'
+
+
     if pCtr == 'nav':
-        g.getnavfile(year, month, day) 
+        navname,navdir,foundit = g.getnavfile(year, month, day) 
+        if foundit:
+            print('SUCCESS:', navname)
     else:
-        g.getsp3file_mgex(year,month,day,pCtr)
+        filename, fdir, foundit = g.getsp3file_mgex(year,month,day,pCtr)
+        if foundit:
+            print('SUCCESS:', filename, fdir )
+        else:
+            print(filename , ' not found')
 
 
 

@@ -21,9 +21,9 @@ import gnssrefl.gps as g
 
 def main():
 # pick up the environment variable for where you are keeping your LSP data
-    print('=================================================================================')
-    print('===========================RUNNING GNSS IR ======================================')
-    print('=================================================================================')
+#    print('=================================================================================')
+#    print('===========================RUNNING GNSS IR ======================================')
+#    print('=================================================================================')
  
 #
 # user inputs the observation file information
@@ -49,6 +49,7 @@ def main():
     parser.add_argument("-delTmax", default=None, type=int, help="Req satellite arc length (minutes)")
     parser.add_argument("-e1", default=None, type=str, help="override min elev angle")
     parser.add_argument("-e2", default=None, type=str, help="override max elev angle")
+    parser.add_argument("-mmdd", default=None, type=str, help="boolean, add columns for month,day,hour,minute")
 
     args = parser.parse_args()
 
@@ -82,9 +83,9 @@ def main():
         extension = args.extension
 
     lsp = guts.read_json_file(station, extension)
-    print(lsp)
+    #print(lsp)
     # now check the overrides to the json instructions
-    print('plt argument', args.plt)
+    #print('plt argument', args.plt)
     if args.plt == 'True':
         lsp['plt_screen'] = True
     elif args.plt == 'False':
@@ -92,7 +93,7 @@ def main():
 
     if (args.delTmax != None):
         lsp['delTmax'] = args.delTmax
-        print('Using user defined maximum satellite arc time (minutes) ', lsp['delTmax'])
+        #print('Using user defined maximum satellite arc time (minutes) ', lsp['delTmax'])
 
 # though I would think not many people would do this ... 
     if (args.compress != None):
@@ -102,11 +103,13 @@ def main():
             lsp['wantCompression'] = False
 
 
+    #print(lsp['screenstats'], 'screenstats from json')
+    # do you override them?
     if args.screenstats == 'False':
-        print('no statistics will come to the screen')
+        #print('No statistics will come to the screen')
         lsp['screenstats'] = False
-    else:
-        print('no statistics will come to the screen')
+    if args.screenstats == 'True':
+        #print('Statistics will come to the screen')
         lsp['screenstats'] = True
 
 # in case you want to analyze multiple days of data
@@ -114,6 +117,12 @@ def main():
         doy_end = doy
     else:
         doy_end = int(args.doy_end)
+        
+
+    add_mmddhhss = False
+    if args.mmdd == 'True':
+        add_mmddhhss = True
+
 
 # in case you want to analyze multiple years of data
     if args.year_end == None:
@@ -124,16 +133,16 @@ def main():
 # default will be to overwrite
     if args.nooverwrite == None:
         lsp['overwriteResults'] = True
-        print('LSP results will be overwritten')
+        #print('LSP results will be overwritten')
     else:
         lsp['overwriteResults'] = False
-        print('LSP results will not be overwritten')
+        #print('LSP results will not be overwritten')
 
     if (args.e1 != None):
-        print('overriding minimum elevation angle: ',args.e1)
+        #print('Overriding minimum elevation angle: ',args.e1)
         lsp['e1'] = float(args.e1)
     if (args.e2 != None):
-        print('overriding maximum elevation angle: ',args.e2)
+        #print('Overriding maximum elevation angle: ',args.e2)
         lsp['e2'] = float(args.e2)
 
 # number of azimuth regions 
@@ -158,25 +167,26 @@ def main():
 # rather than using the input restrictions
     if args.fr != None:
         lsp['freqs'] = [args.fr]
-        print('overriding frequency choices')
+        #print('Overriding frequency choices')
     if args.ampl != None:
-        print('overriding amplitude choices')
+        #print('Overriding amplitude choices')
         lsp['reqAmp'] = [args.ampl]
 
     if args.sat != None:
-        print('overriding - only looking at a single satellite')
+        #print('Overriding - only looking at a single satellite')
         lsp['onesat'] = [args.sat]
 
-
-    #print(lsp)
+    lsp['mmdd'] = add_mmddhhss
 
     year_list = list(range(year, year_end+1))
     doy_list = list(range(doy, doy_end+1))
-    print(doy_list)
     for year in year_list:
         for doy in doy_list:
+            # to make kelly happy :-)
+            #print('--------------------------------------------------')
+            #print('RESULTS gnssir for: ', station, year, doy)
+            #print('--------------------------------------------------')
             guts.gnssir_guts(station,year,doy, snr_type, extension,lsp)
-
 
 if __name__ == "__main__":
     main()
