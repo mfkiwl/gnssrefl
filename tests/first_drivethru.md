@@ -51,7 +51,7 @@ Lets look at the spectral characteristics of the SNR data for the default L1 set
 
 *quickLook p041 2020 132* 
 
-<img src="p041-l1.png" width="500"/>
+<img src="use_cases/p041-l1.png" width="500"/>
 
 The four subplots show you different regions around the antenna. The x-axis tells you 
 reflector height (RH) and the y-axis gives you the spectral amplitude of the SNR data.
@@ -68,7 +68,7 @@ Not all receivers produce L1 data that are as nice as these. Now try L2C:
 
 *quickLook p041 2020 132 -fr 20* 
 
-<img src="p041-l2c.png" width="500"/>
+<img src="use_cases/p041-l2c.png" width="500"/>
 
 One thing you can notice here is that there are more colors in the L1 plots than in the L2C 
 plots. That is simply the result of the fact that there are more L1 satellites than L2C satellites.
@@ -92,42 +92,41 @@ I believe Beidou signals are tracked at this site, but the data are not availabl
 it does print out the answers to a file called *rh.txt*. If you want to assess changes in the reflection
 environment around a GPS/GNSS sites, i.e. look at multiple days, please look at these use cases I have compiled.
 
-### Use Cases (These are under development)
+### Use Cases (These are still under development)
 
 <table>
 <TR>
 <TH>Cryosphere</TH>
 <TD>
 
-* [Lorne, Ross Ice Shelf, Antarctica](lorg_use.md)
+* [Lorne, Ross Ice Shelf, Antarctica](use_cases/lorg_use.md) (lorg)
 
-* [Dye2, Greenland Ice Sheet](gls1_use.md)
+* [Dye2, Greenland Ice Sheet](use_cases/gls1_use.md) (gls1)
 
-* [Thwaites Glacier, Antarctica](lthw_use.md)
+* [Thwaites Glacier, Antarctica](use_cases/lthw_use.md) (lthw)
 
-* [Summit Camp, Greenland](smm3_use.md)
+* [Summit Camp, Greenland](use_cases/smm3_use.md) (smm3)
 </TD>
 <TH>Lakes and Rivers</TH>
 <td>
 
-* [Lake Taupo, New Zealand](tgho_use.md)
+* [Lake Taupo, New Zealand](use_cases/tgho_use.md) (tgho)
 
+* [Michipicoten, Lake Superior, Canada](use_cases/mchn_use.md) (mchn)
 
-* [Michipicoten, Lake Superior, Canada](mchn_use.md)
+* [St Lawrence River, Montreal, Canada](use_cases/pmtl_use.md) (pmtl)
 
-* [St Lawrence River, Montreal, Canada](pmtl_use.md)
-
-* Steenbras Reservoir, Republic of South Africa
+* Steenbras Reservoir, Republic of South Africa (sbas)
 
 </TD>
 <TH>Tides and Storm Surges</TH>
 <TD>
 
-* Hurricane Laura
+* Hurricane Laura (calc)
 
-* St Michael, Alaska
+* St Michael, Alaska (at01)
 
-* Palmer Station, Antarctica
+* Palmer Station, Antarctica (pal2)
 
 </TD>
 </TR>
@@ -136,13 +135,11 @@ environment around a GPS/GNSS sites, i.e. look at multiple days, please look at 
 <TH>Seasonal Snow</TH>
 <TD>
 
-* Half Island Park, Idaho
+* Half Island Park, Idaho (p360)
 
-* Niwot Ridge, Colorado
+* Coldfoot, Alaska (ab33)
 
-* Coldfoot, Alaska
-
-* Priddis, Alberta, Canada
+* Priddis, Alberta, Canada (prds)
 
 </TD>
 <TH>Soil Moisture</TH>
